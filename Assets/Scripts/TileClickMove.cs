@@ -16,6 +16,10 @@ public class TileClickMove : MonoBehaviour
     // This was missing
     private Vector3 targetPosition;
 
+    // Used in highlighting selected tile
+    [SerializeField]
+    private GameObject hoverIndicator;
+
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -31,6 +35,74 @@ public class TileClickMove : MonoBehaviour
     {
         mouseClickAction.performed -= Move;
         mouseClickAction.Disable();
+
+        /*if (currentHoveredTile != null)
+        {
+            currentHoveredTile.material.SetFloat("_HighlightStrength", 0f);
+        }*/
+    }
+
+    private void Update()
+    {
+        HoverHighlight();
+    }
+    /*
+
+    // Method to highlight the selected tile
+    private void hoverHighlight()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Renderer hoveredRenderer = hit.collider.GetComponent<Renderer>();
+
+
+            if (hoveredRenderer != currentHoveredTile)
+            {
+                // Removes highlight from previously highlighted tile
+                if (currentHoveredTile != null)
+                {
+                    currentHoveredTile.material.SetFloat("_HighlightStrength", 0f);
+                }
+            }
+
+            currentHoveredTile = hoveredRenderer;
+
+            // Highlights the new tile
+            if (currentHoveredTile != null)
+            {
+                currentHoveredTile.material.SetFloat("_HighlightStrength", 1f);
+            }
+        }
+        // Removes highlight if no tile selected
+        else
+        {
+            if (currentHoveredTile != null)
+            {
+                currentHoveredTile.material.SetFloat("_HighlightStrength", 0f);
+                currentHoveredTile = null;
+            }
+        }
+    }*/
+
+    private void HoverHighlight()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(
+            Mouse.current.position.ReadValue()
+        );
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            hoverIndicator.SetActive(true);
+            Vector3 newPosition = hit.collider.transform.position;
+            newPosition.y = 2;
+            hoverIndicator.transform.position = newPosition;
+        }
+        else
+        {
+            hoverIndicator.SetActive(false);
+        }
     }
 
     private void Move(InputAction.CallbackContext context)
@@ -51,7 +123,11 @@ public class TileClickMove : MonoBehaviour
 
             Debug.Log("Moving to: " + targetPosition);
 
-            coroutine = StartCoroutine(PlayerMoveTowards(hit.point));
+            // Example destination
+            Vector3 destination = hit.collider.transform.position;
+            destination.y = 2.5f;
+
+            coroutine = StartCoroutine(PlayerMoveTowards(destination));
         }
         else
         {
