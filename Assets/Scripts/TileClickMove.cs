@@ -17,7 +17,7 @@ public class TileClickMove : MonoBehaviour
 
     // An offset applied to the y Axis so models don't clip into the terrain or float above it
     [SerializeField]
-    private float yOffeset = 2.5f;
+    private float yOffset = 2.5f;
 
     [SerializeField]
     private Pathfinder pathfinder;
@@ -167,7 +167,7 @@ public class TileClickMove : MonoBehaviour
     private Vector3 CellToWorld(Vector3Int cell)
     {
         Vector3 worldPosition = grid.GetCellCenterWorld(cell);
-        worldPosition.y = yOffeset;
+        worldPosition.y = yOffset;
 
         return worldPosition;
     }

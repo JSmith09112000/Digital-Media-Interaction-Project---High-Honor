@@ -1,0 +1,36 @@
+{
+    "version": 1,
+    "name": "EnemyMoveTest",
+    "maps": [
+        {
+            "name": "Enemy",
+            "id": "e4a25a25-ffb3-4094-80aa-58274e1d007e",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Button",
+                    "id": "0ba06bb9-1f2d-4afa-9d0d-6bde861aca2a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": true,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b6f2035a-8300-4289-aa94-e85877b69a43",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
