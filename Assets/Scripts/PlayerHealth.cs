@@ -10,12 +10,14 @@ public class PlayerHealth : MonoBehaviour
     [Header("Health UI")]
     public Slider healthSlider;
 
+    private PlayerAudio playerAudio;
     private void Start()
     {
         currentHealth = maxHealth;
 
         healthSlider.maxValue = maxHealth;// connect slider max value to max health value
         healthSlider.value = currentHealth;// connect slider to current health
+        playerAudio = GetComponent<PlayerAudio>(); 
     }
 
     public void TakeDamage(float damage)
@@ -30,6 +32,10 @@ public class PlayerHealth : MonoBehaviour
         {
             Die();
         }
+        else
+        {
+            playerAudio.PlayDamageSound();
+        }
     }
 
     public void Heal(float amount)
@@ -39,6 +45,8 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         UpdateHealthUI();
+
+        playerAudio.PlayHealingSound();
     }
 
     private void UpdateHealthUI()
@@ -48,8 +56,10 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
+        playerAudio.PlayDeathSound();
+
         Debug.Log("Player has died!");
 
-        // add death behavior here 
+        //add death logic here - death screen, end screen, etc.
     }
 }
