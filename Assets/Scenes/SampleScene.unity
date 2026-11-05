@@ -13513,7 +13513,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -48912,6 +48912,7 @@ GameObject:
   - component: {fileID: 1014636283}
   - component: {fileID: 1014636289}
   - component: {fileID: 1014636290}
+  - component: {fileID: 1014636291}
   m_Layer: 0
   m_Name: EnemyTestObj
   m_TagString: Untagged
@@ -48931,7 +48932,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1a47ef8ec288a4783079824a60389c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitMovement
-  movementPoints: 6
 --- !u!65 &1014636285
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -49073,6 +49073,23 @@ MonoBehaviour:
   m_DefaultActionMap: Enemy
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1014636291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014636282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2598fc228122b4d9bf18db4a92a927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stats
+  hp: 100
+  strength: 10
+  dexterity: 10
+  agility: 15
+  defence: 15
 --- !u!1001 &1014847192
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -103237,6 +103254,7 @@ GameObject:
   - component: {fileID: 1904143386}
   - component: {fileID: 1904143387}
   - component: {fileID: 1904143388}
+  - component: {fileID: 1904143389}
   m_Layer: 0
   m_Name: PlayerTestObj
   m_TagString: Untagged
@@ -103385,7 +103403,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1a47ef8ec288a4783079824a60389c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitMovement
-  movementPoints: 6
 --- !u!114 &1904143388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103398,6 +103415,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d54a0c2ac964a2643a8c7863d675b46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUnit
+--- !u!114 &1904143389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904143381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2598fc228122b4d9bf18db4a92a927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stats
+  hp: 100
+  strength: 10
+  dexterity: 10
+  agility: 6
+  defence: 15
 --- !u!1001 &1904567886
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -119786,7 +119820,6 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 719269520}
@@ -119795,3 +119828,4 @@ SceneRoots:
   - {fileID: 1014636288}
   - {fileID: 1960402100}
   - {fileID: 144539666}
+  - {fileID: 330585546}

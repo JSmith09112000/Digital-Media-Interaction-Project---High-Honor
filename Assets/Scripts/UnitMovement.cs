@@ -2,8 +2,18 @@ using UnityEngine;
 
 public class UnitMovement : MonoBehaviour
 {
-    // Update this later so that movement points is taken from the stat block rather than being hard coded into the unit in this specific class.
-    public int movementPoints = 6;
+    // Updated to utilize the stats tied to the Unit
+    private Stats stats;
+
+    public int movementPoints
+    {
+        get { return stats.agility; }
+    }
+
+    public void Awake()
+    {
+        stats = GetComponent<Stats>();
+    }
 
 
     // For now this will onyl have one value for each terrain type but later may be edited so that some units ignore the movement penalty for some or all terrain types.
