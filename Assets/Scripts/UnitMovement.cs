@@ -2,17 +2,25 @@ using UnityEngine;
 
 public class UnitMovement : MonoBehaviour
 {
+
+    [SerializeField]
+    private Grid grid;
+
+    [SerializeField]
+    private UnitManager unitManager;
+
     // Updated to utilize the stats tied to the Unit
     private Stats stats;
 
     public int movementPoints
     {
-        get { return stats.agility; }
+        get { return stats.movement; }
     }
 
     public void Awake()
     {
         stats = GetComponent<Stats>();
+        unitManager.RegisterUnit(grid.WorldToCell(transform.position), this);
     }
 
 

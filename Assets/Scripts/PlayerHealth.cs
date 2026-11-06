@@ -4,8 +4,11 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Settings")]
-    public float maxHealth = 100f;
-    public float currentHealth;
+    public int maxHealth = 100;
+    public int currentHealth;
+
+    // Updated to utilize the stats tied to the Unit
+    private Stats stats;
 
     [Header("Health UI")]
     public Slider healthSlider;
@@ -13,6 +16,8 @@ public class PlayerHealth : MonoBehaviour
     private PlayerAudio playerAudio;
     private void Start()
     {
+        stats = GetComponent<Stats>();
+        maxHealth = stats.hp;
         currentHealth = maxHealth;
 
         healthSlider.maxValue = maxHealth;// connect slider max value to max health value
@@ -20,7 +25,7 @@ public class PlayerHealth : MonoBehaviour
         playerAudio = GetComponent<PlayerAudio>(); 
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         currentHealth -= damage;
 
@@ -38,7 +43,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void Heal(float amount)
+    public void Heal(int amount)
     {
         currentHealth += amount;
 

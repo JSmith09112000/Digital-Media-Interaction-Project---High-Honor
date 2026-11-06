@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyAI : MonoBehaviour
 {
 
     [SerializeField]
@@ -31,6 +31,9 @@ public class EnemyMovement : MonoBehaviour
     private Tilemap tilemap;
 
     private Dictionary<Vector3Int, PathNode> nodes = new Dictionary<Vector3Int, PathNode>();
+
+    [SerializeField]
+    private UnitManager unitManager;
 
     // Used in testing only to make sure enemy can actually move
     public InputActionReference moveTestAction;
@@ -62,7 +65,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void MoveTowardsNearestPlayerUnit()
     {
-        PlayerUnit target = FindNearestPlayerUnitbyPath();
+        PlayerUnit target = FindNearestPlayerUnit();
 
         if (target == null)
         {
@@ -70,11 +73,11 @@ public class EnemyMovement : MonoBehaviour
             return;
         }
 
-        Vector3Int startCell = grid.WorldToCell(transform.position);
+       /* Vector3Int startCell = grid.WorldToCell(transform.position);
 
-        Vector3Int targetCell = grid.WorldToCell(target.transform.position);
+        Vector3Int targetCell = grid.WorldToCell(target.transform.position);*/
 
-        List<PathNode> fullPath = pathfinder.FindPath(startCell, targetCell, unitMovement);
+        List<PathNode> fullPath = FindPathToAttackPosition(target);
 
         if (fullPath == null)
         {
@@ -100,7 +103,7 @@ public class EnemyMovement : MonoBehaviour
         movementRoutine = StartCoroutine(FollowPath(reachablePath));
     }
 
-    private PlayerUnit FindNearestPlayerUnitbyPath()
+    private PlayerUnit FindNearestPlayerUnit()
     {
         PlayerUnit[] playerUnits = FindObjectsByType<PlayerUnit>();
 
@@ -114,7 +117,14 @@ public class EnemyMovement : MonoBehaviour
         {
             Vector3Int playerUnitCell = grid.WorldToCell(playerUnit.transform.position);
 
-            List<PathNode> path = pathfinder.FindPath(enemyCell, playerUnitCell, unitMovement);
+            List<PathNode> path = pathfinder.FindPlayer(enemyCell, playerUnitCell, unitMovement);
+
+            Debug.Log($"Pathcost:{playerUnit}");
+            if (path == null)
+            {
+                Debug.Log("Path null");
+            }
+            Debug.Log(path.Count);
 
             if (path == null || path.Count == 0)
             {
@@ -122,6 +132,8 @@ public class EnemyMovement : MonoBehaviour
             }
 
             int pathCost = path[path.Count - 1].gCost;
+
+            Debug.Log($"Pathcost:{pathCost}");
 
             if (pathCost < cheapestPathCost)
             {
@@ -134,6 +146,54 @@ public class EnemyMovement : MonoBehaviour
         }
 
         return closestPlayerUnit;
+    }
+
+    private List<PathNode> FindPathToAttackPosition(PlayerUnit player)
+    {
+        Vector3Int enemyCell = grid.WorldToCell(transform.position);
+
+        Vector3Int playerCell = grid.WorldToCell(player.transform.position);
+
+        List<PathNode> bestPath = null;
+
+        int cheapestCost = int.MaxValue;
+
+        foreach (Vector3Int attackCell in GetAdjacentCells(playerCell))
+        {
+            if (unitManager.HasUnit(attackCell))
+            {
+                continue;
+            }
+
+            List<PathNode> path = pathfinder.FindPath(enemyCell, attackCell, unitMovement);
+
+            if (path == null || path.Count == 0)
+            {
+                continue;
+            }
+
+            int cost = path[path.Count - 1].gCost;
+
+            if (cost < cheapestCost)
+            {
+                cheapestCost = cost;
+                bestPath = path;
+            }
+        }
+
+        return bestPath;
+
+    }
+
+    private List<Vector3Int> GetAdjacentCells(Vector3Int centerCell)
+    {
+        return new List<Vector3Int>()
+        {
+            centerCell + new Vector3Int( 1,  0, 0),
+            centerCell + new Vector3Int(-1,  0, 0),
+            centerCell + new Vector3Int( 0,  1, 0),
+            centerCell + new Vector3Int( 0, -1, 0)
+        };
     }
 
     private List<PathNode> GetReachablePath(List<PathNode> fullPath)
@@ -159,9 +219,11 @@ public class EnemyMovement : MonoBehaviour
         return reachablePath;
     }
 
-    private IEnumerator FollowPath(
-        List<PathNode> path)
+    private IEnumerator FollowPath(List<PathNode> path)
     {
+
+        unitManager.UnregisterUnit(grid.WorldToCell(transform.position));
+
         foreach (PathNode node in path)
         {
             targetPosition =GetWorldPosition(node.cellPosition);
@@ -169,13 +231,15 @@ public class EnemyMovement : MonoBehaviour
             while (Vector3.Distance(transform.position,targetPosition) > 0.05f)
             {
                 transform.position =
-                    Vector3.MoveTowards(transform.position,targetPosition,moveSpeed *Time.deltaTime);
+                    Vector3.MoveTowards(transform.position,targetPosition,moveSpeed * Time.deltaTime);
 
                 yield return null;
             }
 
             transform.position = targetPosition;
         }
+
+        unitManager.RegisterUnit(grid.WorldToCell(transform.position), unitMovement);
 
         movementRoutine = null;
     }
@@ -187,5 +251,16 @@ public class EnemyMovement : MonoBehaviour
         worldPosition.y = yOffset;
 
         return worldPosition;
+    }
+
+    private List<Vector3Int> GetAdjacentPlayerCells(Vector3Int centerCell)
+    {
+        return new List<Vector3Int>()
+        {
+            centerCell + new Vector3Int( 1,  0, 0),
+            centerCell + new Vector3Int(-1,  0, 0),
+            centerCell + new Vector3Int( 0,  1, 0),
+            centerCell + new Vector3Int( 0, -1, 0)
+        };
     }
 }

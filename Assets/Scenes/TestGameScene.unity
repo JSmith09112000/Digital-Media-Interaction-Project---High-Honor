@@ -5395,6 +5395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pathfinder
   grid: {fileID: 80195071}
+  unitManager: {fileID: 531102239}
 --- !u!1001 &145149922
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24023,6 +24024,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f063c2c33b4e34047a8a1e051f8dc7e8, type: 3}
   m_PrefabInstance: {fileID: 530947416}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &531102238
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 531102240}
+  - component: {fileID: 531102239}
+  m_Layer: 0
+  m_Name: UnitManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &531102239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531102238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f4e8ab84d263747859ed05ef6cbf73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitManager
+--- !u!4 &531102240
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531102238}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.14447, y: 2, z: -11.83795}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &531752778 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f063c2c33b4e34047a8a1e051f8dc7e8, type: 3}
@@ -49801,6 +49846,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1a47ef8ec288a4783079824a60389c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitMovement
+  grid: {fileID: 80195071}
+  unitManager: {fileID: 531102239}
 --- !u!65 &1014636285
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -49889,7 +49936,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5, y: 2.5, z: -20}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 1, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -49911,6 +49958,7 @@ MonoBehaviour:
   yOffset: 2.5
   pathfinder: {fileID: 144539667}
   tilemap: {fileID: 660985700}
+  unitManager: {fileID: 531102239}
   moveTestAction: {fileID: 7841834401587421740, guid: ca765b2142ac0dd4480377370d75ad6a, type: 3}
 --- !u!114 &1014636290
 MonoBehaviour:
@@ -49957,8 +50005,9 @@ MonoBehaviour:
   hp: 100
   strength: 10
   dexterity: 10
-  agility: 15
+  agility: 6
   defence: 15
+  movement: 5
 --- !u!1001 &1014847192
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -104834,8 +104883,8 @@ Transform:
   m_GameObject: {fileID: 1904143381}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 2.5, z: -2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -1.5, y: 2.5, z: -1.5}
+  m_LocalScale: {x: 0.8, y: 1, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1348869028}
@@ -104878,6 +104927,7 @@ MonoBehaviour:
   pathfinder: {fileID: 144539667}
   tilemap: {fileID: 660985700}
   hoverIndicator: {fileID: 1960402096}
+  unitManager: {fileID: 531102239}
 --- !u!114 &1904143387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104890,6 +104940,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1a47ef8ec288a4783079824a60389c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitMovement
+  grid: {fileID: 80195071}
+  unitManager: {fileID: 531102239}
 --- !u!114 &1904143388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104919,6 +104971,7 @@ MonoBehaviour:
   dexterity: 10
   agility: 6
   defence: 15
+  movement: 5
 --- !u!114 &1904143390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121576,3 +121629,4 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 75340039}
   - {fileID: 709541948}
+  - {fileID: 531102240}

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
-public class TileClickMove : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [SerializeField]
     private InputAction mouseClickAction;
@@ -33,9 +33,14 @@ public class TileClickMove : MonoBehaviour
 
     private Dictionary<Vector3Int, PathNode> nodes = new Dictionary<Vector3Int, PathNode>();
 
+    private bool attacking = false;
+
     // Used in highlighting selected tile
     [SerializeField]
     private GameObject hoverIndicator;
+
+    [SerializeField]
+    private UnitManager unitManager;
 
     private void Awake()
     {
@@ -60,6 +65,12 @@ public class TileClickMove : MonoBehaviour
 
     private void Update()
     {
+        /*if (attacking)
+        {
+            mouseClickAction.performed -= Move;
+            mouseClickAction.performed += Attack;
+        }*/
+    
         HoverHighlight();
     }
 
@@ -145,9 +156,22 @@ public class TileClickMove : MonoBehaviour
         }
     }
 
+    private void Attack(InputAction.CallbackContext context)
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+        if (Physics.Raycast(ray: ray, hitInfo: out RaycastHit hit) && hit.collider)
+        {
+
+        }
+    }
+
     private IEnumerator FollowPath(List<PathNode> path)
     {
-        foreach(PathNode node in path)
+
+        unitManager.UnregisterUnit(grid.WorldToCell(transform.position));
+
+        foreach (PathNode node in path)
         {
             Vector3 targetPosition = CellToWorld(node.cellPosition);
 
@@ -159,9 +183,11 @@ public class TileClickMove : MonoBehaviour
             }
 
             transform.position = targetPosition;
-
-            movementRoutine = null;
         }
+
+        unitManager.RegisterUnit(grid.WorldToCell(transform.position), unitMovement);
+
+        movementRoutine = null;
     }
 
     private Vector3 CellToWorld(Vector3Int cell)
