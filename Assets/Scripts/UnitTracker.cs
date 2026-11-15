@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 // Used to keep track of where units are.
-public class UnitManager : MonoBehaviour
+public class UnitTracker : MonoBehaviour
 {
     // Keeps track of occupied cells
     // For not uses UnitMovement but will alter change to use a dedicated unit script once we have one ready.

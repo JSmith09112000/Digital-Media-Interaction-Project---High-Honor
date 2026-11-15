@@ -7,7 +7,7 @@ public class UnitMovement : MonoBehaviour
     private Grid grid;
 
     [SerializeField]
-    private UnitManager unitManager;
+    private UnitTracker unitManager;
 
     // Updated to utilize the stats tied to the Unit
     private Stats stats;

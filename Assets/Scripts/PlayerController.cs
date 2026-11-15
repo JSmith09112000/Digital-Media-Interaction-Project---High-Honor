@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
     private GameObject hoverIndicator;
 
     [SerializeField]
-    private UnitManager unitManager;
+    private UnitTracker unitManager;
 
     private void Awake()
     {

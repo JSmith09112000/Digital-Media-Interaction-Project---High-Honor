@@ -11,7 +11,7 @@ public class Pathfinder : MonoBehaviour
     private Grid grid;
 
     [SerializeField]
-    private UnitManager unitManager;
+    private UnitTracker unitTracker;
 
     private void Awake()
     {
@@ -269,6 +269,6 @@ public class Pathfinder : MonoBehaviour
 
     private bool IsOccupied(Vector3Int cell)
     {
-        return unitManager.HasUnit(cell);
+        return unitTracker.HasUnit(cell);
     }
 }
