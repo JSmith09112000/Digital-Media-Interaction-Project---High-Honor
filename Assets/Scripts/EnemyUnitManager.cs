@@ -11,6 +11,8 @@ public class EnemyUnitManager : MonoBehaviour
     [SerializeField]
     private TurnTracker turnTracker;
 
+    private bool enemyPerformingTurn = false;
+
     private void Start()
     {
         enemies = Object.FindObjectsByType<EnemyAI>().ToList<EnemyAI>();
@@ -24,21 +26,21 @@ public class EnemyUnitManager : MonoBehaviour
 
     void Update()
     {
-        if (turnTracker.enemyTurn)
+        if (turnTracker.enemyTurn && !enemyPerformingTurn)
         {
             StartCoroutine(performEnemyTurn());
-            turnTracker.endEnemyTurn();
         }
     }
 
     private IEnumerator performEnemyTurn()
     {
+        enemyPerformingTurn = true;
         foreach (EnemyAI enemy in enemies)
         {
-            enemy.runEnemyAI();
-            // Waits for 1 second before starting AI for next unit
-            yield return new WaitForSeconds(1f);
+           yield return StartCoroutine(enemy.runEnemyAI());
+            //yield return new WaitForSeconds(1f);
         }
-        
+        turnTracker.endEnemyTurn();
+        enemyPerformingTurn = false;
     } 
 }

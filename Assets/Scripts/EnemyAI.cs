@@ -22,6 +22,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private Pathfinder pathfinder;
 
+    [SerializeField]
+    private BattleManager battleManager;
+
     private Camera mainCamera;
     private Coroutine movementRoutine;
 
@@ -34,7 +37,7 @@ public class EnemyAI : MonoBehaviour
     private Dictionary<Vector3Int, PathNode> nodes = new Dictionary<Vector3Int, PathNode>();
 
     [SerializeField]
-    private UnitTracker unitManager;
+    private UnitTracker unitTracker;
 
     //Used to decide which order enemies will move in
     public int initiative = 5;
@@ -52,7 +55,7 @@ public class EnemyAI : MonoBehaviour
         stats = GetComponent<Stats>();
         unitMovement = GetComponent<UnitMovement>();
 
-        initiative = (Random.Range(0, 100) + stats.agility);
+        initiative = (Random.Range(0, 101) + stats.agility);
     }
 
     /*private void OnEnable()
@@ -79,7 +82,7 @@ public class EnemyAI : MonoBehaviour
         }
     }*/
 
-    public void runEnemyAI()
+    public IEnumerator runEnemyAI()
     {
         /*
         * First checks if there is a player within the unit's attack range and if so attacks that unit then ends this enemies turn
@@ -89,16 +92,37 @@ public class EnemyAI : MonoBehaviour
 
         Debug.Log("Beginning Turn for Enemy:" + enemyNumber);
         PlayerUnit target = FindNearestPlayerUnit();
-        MoveTowardsNearestPlayerUnit(target);
+
+        bool playerInRange = PlayerInRange(target, stats.minRange, stats.maxRange);
+        Debug.Log(playerInRange);
+
+        if (playerInRange)
+        {
+            // Attack method call here once done
+            Attack(target);
+            Debug.Log("Enemy: " + enemyNumber + " is attacking.");
+            yield break;
+        }
+
+        yield return MoveTowardsNearestPlayerUnit(target);
+
+        playerInRange = PlayerInRange(target, stats.minRange, stats.maxRange);
+
+        if (playerInRange)
+        {
+            // Attack method call here once done
+            Attack(target);
+            Debug.Log("Enemy: " + enemyNumber + " is attacking.");
+        }
     }
 
-    private void MoveTowardsNearestPlayerUnit(PlayerUnit target)
+    private IEnumerator MoveTowardsNearestPlayerUnit(PlayerUnit target)
     {
 
         if (target == null)
         {
             Debug.Log("No player found");
-            return;
+            yield break;
         }
 
        /* Vector3Int startCell = grid.WorldToCell(transform.position);
@@ -110,7 +134,7 @@ public class EnemyAI : MonoBehaviour
         if (fullPath == null)
         {
             Debug.Log("No path found");
-            return;
+            yield break;
         }
 
 
@@ -120,7 +144,7 @@ public class EnemyAI : MonoBehaviour
         if (reachablePath.Count == 0)
         {
             Debug.Log("No Reachable path found");
-            return;
+            yield break;
         }
 
         if (movementRoutine != null)
@@ -128,7 +152,7 @@ public class EnemyAI : MonoBehaviour
             StopCoroutine(movementRoutine);
         }
 
-        movementRoutine = StartCoroutine(FollowPath(reachablePath));
+        yield return movementRoutine = StartCoroutine(FollowPath(reachablePath));
     }
 
     private PlayerUnit FindNearestPlayerUnit()
@@ -188,7 +212,7 @@ public class EnemyAI : MonoBehaviour
 
         foreach (Vector3Int attackCell in GetAttackPositions(playerCell, stats.minRange, stats.maxRange))
         {
-            if (unitManager.HasUnit(attackCell))
+            if (unitTracker.HasUnit(attackCell))
             {
                 continue;
             }
@@ -277,7 +301,7 @@ public class EnemyAI : MonoBehaviour
     private IEnumerator FollowPath(List<PathNode> path)
     {
 
-        unitManager.UnregisterUnit(grid.WorldToCell(transform.position));
+        unitTracker.UnregisterUnit(grid.WorldToCell(transform.position));
 
         foreach (PathNode node in path)
         {
@@ -294,7 +318,7 @@ public class EnemyAI : MonoBehaviour
             transform.position = targetPosition;
         }
 
-        unitManager.RegisterUnit(grid.WorldToCell(transform.position), unitMovement);
+        unitTracker.RegisterUnit(grid.WorldToCell(transform.position), unitMovement);
 
         movementRoutine = null;
     }
@@ -306,5 +330,21 @@ public class EnemyAI : MonoBehaviour
         worldPosition.y = yOffset;
 
         return worldPosition;
+    }
+
+    private bool PlayerInRange(PlayerUnit target, int minRange, int maxRange)
+    {
+        Vector3Int enemyCell = grid.WorldToCell(transform.position);
+        Vector3Int targetCell = grid.WorldToCell(target.transform.position);
+        int distance = Mathf.Abs(enemyCell.x - targetCell.x) + Mathf.Abs(enemyCell.y - targetCell.y);
+
+        Debug.Log("Distance: " + distance);
+
+        return distance >= minRange && distance <= maxRange;
+    }
+
+    public void Attack(PlayerUnit target)
+    {
+        battleManager.Battle(this.GameObject(), target.gameObject);
     }
 }

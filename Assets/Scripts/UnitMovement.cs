@@ -7,7 +7,7 @@ public class UnitMovement : MonoBehaviour
     private Grid grid;
 
     [SerializeField]
-    private UnitTracker unitManager;
+    private UnitTracker unitTracker;
 
     // Updated to utilize the stats tied to the Unit
     private Stats stats;
@@ -20,7 +20,7 @@ public class UnitMovement : MonoBehaviour
     public void Awake()
     {
         stats = GetComponent<Stats>();
-        unitManager.RegisterUnit(grid.WorldToCell(transform.position), this);
+        unitTracker.RegisterUnit(grid.WorldToCell(transform.position), this);
     }
 
 

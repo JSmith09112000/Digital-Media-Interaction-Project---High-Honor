@@ -8,9 +8,13 @@ public class TurnTracker : MonoBehaviour
 
     public InputActionReference turnTestAction;
 
+    // Used so that once the enemy turn ends the player will be able to move and attack again
+    [SerializeField]
+    private PlayerController playerController;
+
     void Update()
     {
-        if (turnTestAction.action.WasPressedThisFrame())
+        if (turnTestAction.action.WasPressedThisFrame() && !enemyTurn)
         {
             Debug.Log("Enemy turn start");
             endPlayerTurn();
@@ -20,10 +24,12 @@ public class TurnTracker : MonoBehaviour
     public void endPlayerTurn()
     {
         enemyTurn = true;
+        playerController.DeselectUnit();
     }
 
     public void endEnemyTurn()
     {
         enemyTurn = false;
+        playerController.RefreshUnits();
     }
 }

@@ -5,7 +5,7 @@ public class EnemyHealth : MonoBehaviour
 {
     [Header("Health Settings")]
     public int maxHealth = 100;
-    public int currentHealth;
+    public int currentHealth = 100;
 
     // Updated to utilize the stats tied to the Unit
     private Stats stats;

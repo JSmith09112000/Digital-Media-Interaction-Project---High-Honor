@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
@@ -7,71 +9,80 @@ using UnityEngine.Tilemaps;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
-    private InputAction mouseClickAction;
+    private InputAction leftClickAction;
 
     [SerializeField]
-    private float playerSpeed = 10f;
+    private InputAction rightClickAction;
 
-    [SerializeField]
-    private Grid grid;
-
-    // An offset applied to the y Axis so models don't clip into the terrain or float above it
-    [SerializeField]
-    private float yOffset = 2.5f;
-
-    [SerializeField]
-    private Pathfinder pathfinder;
-
-    private Camera mainCamera;
-    private Coroutine movementRoutine;
-
-    private UnitMovement unitMovement;
-    private Vector3 targetPosition;
-
-    [SerializeField]
-    private Tilemap tilemap;
-
-    private Dictionary<Vector3Int, PathNode> nodes = new Dictionary<Vector3Int, PathNode>();
-
-    private bool attacking = false;
+    private PlayerUnit selectedUnit = null;
 
     // Used in highlighting selected tile
     [SerializeField]
     private GameObject hoverIndicator;
 
     [SerializeField]
-    private UnitTracker unitManager;
+    private UnitTracker unitTracker;
+
+    [SerializeField]
+    private TurnTracker turnTracker;
+
+    //private UnitMovement unitMovement;
+
+    private Camera mainCamera;
+
+    [SerializeField]
+    private Grid grid;
+
+    public bool unitPerfomingAction = false;
+
+    // A list of all player units
+    public static List<PlayerUnit> playerUnits;
 
     private void Awake()
     {
 
         mainCamera = Camera.main;
 
-        unitMovement = GetComponent<UnitMovement>();
+        playerUnits = Object.FindObjectsByType<PlayerUnit>().ToList<PlayerUnit>();
+
+        //unitMovement = GetComponent<UnitMovement>();
 
     }
 
     private void OnEnable()
     {
-        mouseClickAction.Enable();
-        mouseClickAction.performed += Move;
+        leftClickAction.Enable();
+        leftClickAction.performed += LeftClicked;
+        rightClickAction.Enable();
+        rightClickAction.performed += RightClicked;
     }
 
     private void OnDisable()
     {
-        mouseClickAction.performed -= Move;
-        mouseClickAction.Disable();
+        leftClickAction.performed -= LeftClicked;
+        leftClickAction.Disable();
+        rightClickAction.Disable();
+        rightClickAction.performed -= RightClicked;
     }
 
     private void Update()
     {
-        /*if (attacking)
+        if (turnTracker.enemyTurn)
         {
-            mouseClickAction.performed -= Move;
-            mouseClickAction.performed += Attack;
-        }*/
-    
+            return;
+        }
         HoverHighlight();
+    }
+
+    // Refreshes the units on start of turn
+    public void RefreshUnits()
+    {
+        for(int i = 0; i < playerUnits.Count(); i++)
+        {
+            playerUnits[i].hasAttacked = false;
+            playerUnits[i].hasMoved = false;
+            unitPerfomingAction = false;
+        }
     }
 
     private void HoverHighlight()
@@ -93,23 +104,30 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Move(InputAction.CallbackContext context)
+    public void DeselectUnit()
     {
+        selectedUnit = null;
+    }
+
+    private void LeftClicked(InputAction.CallbackContext context)
+    {
+
+        if (turnTracker.enemyTurn)
+        {
+            Debug.Log("Currently it is the enemy turn");
+            return;
+        }
+
+        if (unitPerfomingAction)
+        {
+            Debug.Log("A unit is currently busy. Please wait for them to finish their action.");
+            return;
+        }
+
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if (Physics.Raycast(ray: ray, hitInfo: out RaycastHit hit) && hit.collider)
         {
-
-            Debug.Log("Raycast hit: " + hit.collider.gameObject.name);
-
-
-            // Makes it so so that players must wait for movement to stop before starting to move again.
-            if (movementRoutine != null)
-            {
-                Debug.Log("movementRoutine is not null");
-                return;
-            }
-
             Terrain terrain = hit.collider.GetComponent<Terrain>();
 
             if (terrain == null)
@@ -117,85 +135,70 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            Vector3Int startCell = grid.WorldToCell(transform.position);
-            Debug.Log($"{startCell}");
-
             Vector3Int targetCell = grid.WorldToCell(terrain.transform.position);
-            Debug.Log($"{targetCell}");
 
-            List<PathNode> path = pathfinder.FindPath(startCell, targetCell, unitMovement);
-
-            if (path == null)
+            if (unitTracker.HasUnit(targetCell))
             {
-                Debug.Log("path is null");
-                return;
-            }
-            int totalCost = path[path.Count - 1].gCost;
-
-            if (totalCost > unitMovement.movementPoints)
-            {
-                Debug.Log($"Path costs {totalCost}. Unit only has {unitMovement.movementPoints}");
-                return;
+                if (unitTracker.GetUnit(targetCell).TryGetComponent<PlayerUnit>(out _))
+                {
+                    selectedUnit = unitTracker.GetUnit(targetCell).GetComponent<PlayerUnit>();
+                    return;
+                }
             }
 
-            movementRoutine = StartCoroutine(FollowPath(path));
+            if (selectedUnit == null)
+            {
+                return;
+            }
 
-            /*targetPosition = hit.point;
-
-            Debug.Log("Moving to: " + targetPosition);
-
-            // Example destination
-            Vector3 destination = hit.collider.transform.position;
-            destination.y = 2.5f;
-
-            coroutine = StartCoroutine(PlayerMoveTowards(destination));*/
-        }
-        else
-        {
-            Debug.Log("Raycast hit NOTHING");
+            Debug.Log(selectedUnit);
+            unitPerfomingAction = true;
+            selectedUnit.Move();
+            
         }
     }
 
-    private void Attack(InputAction.CallbackContext context)
+    public void RightClicked(InputAction.CallbackContext context)
     {
+        if (turnTracker.enemyTurn)
+        {
+            Debug.Log("Currently it is the enemy turn");
+            return;
+        }
+        if (unitPerfomingAction)
+        {
+            Debug.Log("A unit is currently busy. Please wait for them to finish their action.");
+            return;
+        }
+
+
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if (Physics.Raycast(ray: ray, hitInfo: out RaycastHit hit) && hit.collider)
         {
+            Terrain terrain = hit.collider.GetComponent<Terrain>();
 
-        }
-    }
-
-    private IEnumerator FollowPath(List<PathNode> path)
-    {
-
-        unitManager.UnregisterUnit(grid.WorldToCell(transform.position));
-
-        foreach (PathNode node in path)
-        {
-            Vector3 targetPosition = CellToWorld(node.cellPosition);
-
-            while (Vector3.Distance(transform.position, targetPosition) > 0.05f)
+            if (terrain == null)
             {
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerSpeed * Time.deltaTime);
-
-                yield return null;
+                return;
             }
 
-            transform.position = targetPosition;
+            Vector3Int targetCell = grid.WorldToCell(terrain.transform.position);
+
+            if (unitTracker.HasUnit(targetCell))
+            {
+            }
+
+            if (selectedUnit == null)
+            {
+                return;
+            }
+
+            Debug.Log(selectedUnit);
+            unitPerfomingAction = true;
+            selectedUnit.Attack();
+
         }
-
-        unitManager.RegisterUnit(grid.WorldToCell(transform.position), unitMovement);
-
-        movementRoutine = null;
-    }
-
-    private Vector3 CellToWorld(Vector3Int cell)
-    {
-        Vector3 worldPosition = grid.GetCellCenterWorld(cell);
-        worldPosition.y = yOffset;
-
-        return worldPosition;
     }
 
     /*private IEnumerator PlayerMoveTowards(Vector3 target)
@@ -215,8 +218,8 @@ public class PlayerController : MonoBehaviour
 
     }*/
 
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
         Gizmos.DrawSphere(targetPosition, 1);
-    }
+    }*/
 }
