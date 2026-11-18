@@ -10,6 +10,9 @@ public class PlayerHealth : MonoBehaviour
     // Updated to utilize the stats tied to the Unit
     private Stats stats;
 
+    [SerializeField]
+    private DeathScreenManager deathScreenManager;
+
     [Header("Health UI")]
     public Slider healthSlider;
 
@@ -62,6 +65,8 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         playerAudio.PlayDeathSound();
+
+        deathScreenManager.PlayerDied();
 
         Debug.Log("Player has died!");
 
