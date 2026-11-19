@@ -30,6 +30,8 @@ public class EnemyUnitManager : MonoBehaviour
         {
             StartCoroutine(performEnemyTurn());
         }
+
+        enemies.RemoveAll(item => item == null);
     }
 
     private IEnumerator performEnemyTurn()

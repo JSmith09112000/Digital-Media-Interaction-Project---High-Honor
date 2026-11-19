@@ -82,6 +82,18 @@ public class EnemyAI : MonoBehaviour
         }
     }*/
 
+    private void Update()
+    {
+        if(this.GetComponent<EnemyHealth>().currentHealth <= 0)
+        {
+            UnitTracker unitTracker = GameObject.Find("UnitTracker").GetComponent<UnitTracker>();
+
+            unitTracker.UnregisterUnit(grid.WorldToCell(transform.position));
+
+            this.GetComponent<EnemyHealth>().Die();
+        }
+    }
+
     public IEnumerator runEnemyAI()
     {
         /*

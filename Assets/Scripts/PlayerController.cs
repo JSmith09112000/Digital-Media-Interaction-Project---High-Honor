@@ -38,6 +38,12 @@ public class PlayerController : MonoBehaviour
     // A list of all player units
     public static List<PlayerUnit> playerUnits;
 
+    //For which unit the cursor is currently over
+    private Stats hoveredUnit;
+
+    [SerializeField]
+    private StatsUI statsUI;
+
     private void Awake()
     {
 
@@ -97,6 +103,31 @@ public class PlayerController : MonoBehaviour
             Vector3 newPosition = hit.collider.transform.position;
             newPosition.y = 2;
             hoverIndicator.transform.position = newPosition;
+
+            Terrain terrain = hit.collider.GetComponent<Terrain>();
+
+            Vector3Int targetCell = grid.WorldToCell(terrain.transform.position);
+
+            Stats detectedUnit = null;
+
+            if (unitTracker.HasUnit(targetCell))
+            {
+                detectedUnit = unitTracker.GetUnit(targetCell).GetComponent<Stats>();
+            }
+
+            if (detectedUnit != hoveredUnit)
+            {
+                hoveredUnit = detectedUnit;
+
+                if (hoveredUnit != null)
+                {
+                    statsUI.ShowStats(hoveredUnit);
+                }
+                else
+                {
+                    statsUI.HideStats();
+                }
+            }
         }
         else
         {
@@ -132,6 +163,7 @@ public class PlayerController : MonoBehaviour
 
             if (terrain == null)
             {
+                Debug.Log("terrain null");
                 return;
             }
 
@@ -139,6 +171,7 @@ public class PlayerController : MonoBehaviour
 
             if (unitTracker.HasUnit(targetCell))
             {
+                Debug.Log("Cell has unit");
                 if (unitTracker.GetUnit(targetCell).TryGetComponent<PlayerUnit>(out _))
                 {
                     selectedUnit = unitTracker.GetUnit(targetCell).GetComponent<PlayerUnit>();
@@ -148,6 +181,7 @@ public class PlayerController : MonoBehaviour
 
             if (selectedUnit == null)
             {
+                Debug.Log("Selected unit null");
                 return;
             }
 

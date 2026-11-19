@@ -19,6 +19,10 @@ public class TurnTracker : MonoBehaviour
             Debug.Log("Enemy turn start");
             endPlayerTurn();
         }
+        if (turnTestAction.action.WasPressedThisFrame())
+        {
+            Debug.Log("Enemy turn in progress");
+        }
     }
 
     public void endPlayerTurn()

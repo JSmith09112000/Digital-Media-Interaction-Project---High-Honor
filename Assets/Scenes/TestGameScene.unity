@@ -503,6 +503,7 @@ MonoBehaviour:
   turnTracker: {fileID: 1790313686}
   grid: {fileID: 80195071}
   unitPerfomingAction: 0
+  statsUI: {fileID: 1003172671}
 --- !u!4 &4956238
 Transform:
   m_ObjectHideFlags: 0
@@ -14227,7 +14228,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ab1437ea6a6eb04d80b2cde5fd2b68a, type: 3}
   m_Name: 
@@ -17358,7 +17359,7 @@ RectTransform:
   m_Father: {fileID: 1029678068}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -20947,7 +20948,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 40
   currentHealth: 40
-  healthSlider: {fileID: 0}
 --- !u!1001 &459933925
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51030,7 +51030,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 20
   currentHealth: 20
-  healthSlider: {fileID: 0}
 --- !u!1001 &1014847192
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72104,7 +72103,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1348869028
 RectTransform:
   m_ObjectHideFlags: 0
@@ -78432,7 +78431,7 @@ RectTransform:
   m_Father: {fileID: 929367331}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -83566,7 +83565,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1647075101067616652, guid: 2872a793071824a409272ace599cc5fe, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1825093524436004472, guid: 2872a793071824a409272ace599cc5fe, type: 3}
       propertyPath: grid
@@ -83580,6 +83579,10 @@ PrefabInstance:
       propertyPath: unitTracker
       value: 
       objectReference: {fileID: 1581739948}
+    - target: {fileID: 3352543261013211027, guid: 2872a793071824a409272ace599cc5fe, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4357943456160603795, guid: 2872a793071824a409272ace599cc5fe, type: 3}
       propertyPath: m_Name
       value: EnemyTestObj (1)
@@ -83668,7 +83671,8 @@ PrefabInstance:
       propertyPath: dexterity
       value: 5
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3352543261013211027, guid: 2872a793071824a409272ace599cc5fe, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -99457,6 +99461,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1790313687}
   - component: {fileID: 1790313686}
+  - component: {fileID: 1790313688}
   m_Layer: 0
   m_Name: TurnTracker
   m_TagString: Untagged
@@ -99494,6 +99499,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1790313688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790313685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+  m_Actions: {fileID: -944628639613478452, guid: ca765b2142ac0dd4480377370d75ad6a, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Enemy
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &1790818726 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f063c2c33b4e34047a8a1e051f8dc7e8, type: 3}
@@ -106922,7 +106957,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -123709,7 +123744,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1647075101067616652, guid: 2872a793071824a409272ace599cc5fe, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1825093524436004472, guid: 2872a793071824a409272ace599cc5fe, type: 3}
       propertyPath: grid
@@ -123723,6 +123758,10 @@ PrefabInstance:
       propertyPath: unitTracker
       value: 
       objectReference: {fileID: 1581739948}
+    - target: {fileID: 3352543261013211027, guid: 2872a793071824a409272ace599cc5fe, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4357943456160603795, guid: 2872a793071824a409272ace599cc5fe, type: 3}
       propertyPath: m_Name
       value: EnemyTestObj
@@ -123819,7 +123858,8 @@ PrefabInstance:
       propertyPath: dexterity
       value: 15
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3352543261013211027, guid: 2872a793071824a409272ace599cc5fe, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

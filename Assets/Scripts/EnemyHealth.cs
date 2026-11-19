@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ public class EnemyHealth : MonoBehaviour
     private Stats stats;
 
     [Header("Health UI")]
-    public Slider healthSlider;
+    //public Slider healthSlider;
 
     private PlayerAudio playerAudio;
     private void Start()
@@ -20,8 +21,8 @@ public class EnemyHealth : MonoBehaviour
         maxHealth = stats.hp;
         currentHealth = maxHealth;
 
-        healthSlider.maxValue = maxHealth;// connect slider max value to max health value
-        healthSlider.value = currentHealth;// connect slider to current health
+        //healthSlider.maxValue = maxHealth;// connect slider max value to max health value
+        //healthSlider.value = currentHealth;// connect slider to current health
     }
 
     public void TakeDamage(int damage)
@@ -34,11 +35,11 @@ public class EnemyHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            Die();
+            //Die();
         }
         else
         {
-            playerAudio.PlayDamageSound();
+            //playerAudio.PlayDamageSound();
         }
     }
 
@@ -50,19 +51,21 @@ public class EnemyHealth : MonoBehaviour
 
         UpdateHealthUI();
 
-        playerAudio.PlayHealingSound();
+        //playerAudio.PlayHealingSound();
     }
 
     private void UpdateHealthUI()
     {
-        healthSlider.value = currentHealth;
+        //healthSlider.value = currentHealth;
     }
 
-    private void Die()
+    public void Die()
     {
-        playerAudio.PlayDeathSound();
+        //playerAudio.PlayDeathSound();
 
         Debug.Log("Enemy has died!");
+
+        Destroy(this.GameObject());
 
         //add death logic here - death screen, end screen, etc.
     }

@@ -70,11 +70,13 @@ public class PlayerUnit : MonoBehaviour
             if (movementRoutine != null)
             {
                 Debug.Log("movementRoutine is not null");
+                playerController.unitPerfomingAction = false;
                 return;
             }
             if (hasMoved)
             {
                 Debug.Log("Unit has already moved");
+                playerController.unitPerfomingAction = false;
                 return;
             }
 
@@ -127,6 +129,7 @@ public class PlayerUnit : MonoBehaviour
         }
         else
         {
+            playerController.unitPerfomingAction = false;
             Debug.Log("Raycast hit NOTHING");
         }
     }
@@ -138,12 +141,15 @@ public class PlayerUnit : MonoBehaviour
         if (movementRoutine != null)
         {
             Debug.Log("movementRoutine is not null");
+            playerController.unitPerfomingAction = false;
             return;
         }
 
         if (hasAttacked)
         {
             Debug.Log("Unit has already attacked.");
+            playerController.unitPerfomingAction = false;
+            return;
         }
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
@@ -176,6 +182,11 @@ public class PlayerUnit : MonoBehaviour
                     battleManager.Battle(this.GameObject(), enemy);
                 }
             }
+            else
+            {
+                playerController.unitPerfomingAction = false;
+                return;
+            }
             playerController.unitPerfomingAction = false;
             hasAttacked = true;
             // Attacking also makes it so a unit can't move. (The idea being that attacking has tired the unit out and they need a short rest.)
@@ -184,6 +195,7 @@ public class PlayerUnit : MonoBehaviour
         else
         {
             Debug.Log("Raycast hit NOTHING");
+            playerController.unitPerfomingAction = false;
         }
     }
 

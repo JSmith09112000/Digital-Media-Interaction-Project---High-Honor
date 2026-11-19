@@ -19,6 +19,8 @@ public class StatsUI : MonoBehaviour
     private PlayerHealth playerHealth;
     private EnemyHealth enemyHealth;
 
+    private bool statsShowing = false;
+
 
 
     //Ensures the stats ui is hidden by default
@@ -29,13 +31,14 @@ public class StatsUI : MonoBehaviour
 
     public void ShowStats(Stats unit)
     {
+        statsShowing = true;
         currentUnit = unit;
 
         playerHealth = unit.GetComponent<PlayerHealth>();
         enemyHealth = unit.GetComponent<EnemyHealth>();
 
         statsPanel.SetActive(true);
-        Update();
+        //Update();
     }
 
     public void HideStats()
@@ -45,28 +48,31 @@ public class StatsUI : MonoBehaviour
         playerHealth = null;
         enemyHealth = null;
         statsPanel.SetActive(false);
+        statsShowing = false;
     }
 
-    
+
     void Update()
     {
-        //Checks whether a player or an enemies health needs to be displayed based on what the Unit has available.
-        if(playerHealth != null)
+        if (statsShowing)
         {
-            healthText.text = "Health: " + playerHealth.currentHealth;
+            //Checks whether a player or an enemies health needs to be displayed based on what the Unit has available.
+            if (playerHealth != null)
+            {
+                healthText.text = "Health: " + playerHealth.currentHealth + "/" + playerHealth.maxHealth;
+            }
+            else if (enemyHealth != null)
+            {
+                healthText.text = "Health: " + enemyHealth.currentHealth + "/" + enemyHealth.maxHealth;
+            }
+
+
+            strengthText.text = "Strength: " + currentUnit.strength;
+            dexterityText.text = "Dexterity: " + currentUnit.dexterity;
+            agilityText.text = "Agility: " + currentUnit.agility;
+            defenceText.text = "Defence: " + currentUnit.defence;
+            movementText.text = "Movement: " + currentUnit.movement;
         }
-        else if (enemyHealth != null)
-        {
-            healthText.text = "Health: " + enemyHealth.currentHealth;
-        }
-
-
-        strengthText.text = "Strength: " + currentUnit.strength;
-        dexterityText.text = "Dexterity: " + currentUnit.dexterity;
-        agilityText.text = "Agility: " + currentUnit.agility;
-        defenceText.text = "Defence: " + currentUnit.defence;
-        movementText.text = "Movement: " + currentUnit.movement;
-
         
     }
 }
